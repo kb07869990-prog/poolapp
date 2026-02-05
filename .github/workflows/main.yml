@@ -7,6 +7,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Free Disk Space
+        # Yeh step bohot zaroori hai OpenCV build ke liye
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -20,7 +28,9 @@ jobs:
           pip install buildozer Cython==0.29.33
 
       - name: Build with Buildozer
+        # 'buildozer android clean' pehle chalana zaroori hai
         run: |
+          buildozer android clean
           yes | buildozer -v android debug
         
       - name: Upload APK
